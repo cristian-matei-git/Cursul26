@@ -1,21 +1,22 @@
 package curs;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
  
 public class CarRentalSystem {
  
-  private static Scanner sc = new Scanner(System.in);
   private HashMap<String, String> rentedCars = new HashMap<String, String>(100, 0.5f);
   private HashMap<String, RentedCars> myMap = new HashMap<>();
   
  
-  private static String getPlateNo() {
+  private static String getPlateNo(Scanner sc) {
     System.out.println("Introduceti numarul de inmatriculare:");
     return sc.nextLine();
   }
  
-  private static String getOwnerName() {
+  private static String getOwnerName(Scanner sc) {
     System.out.println("Introduceti numele proprietarului:");
     return sc.nextLine();
   }
@@ -87,7 +88,7 @@ public class CarRentalSystem {
   }
  
   private static void printCommandsList() {
-    System.out.println("help         - Afiseaza aceasta lista de comenzi");
+    System.out.println("\nhelp         - Afiseaza aceasta lista de comenzi");
     System.out.println("add          - Adauga o noua pereche (masina, sofer)");
     System.out.println("check        - Verifica daca o masina este deja luata");
     System.out.println("remove       - Sterge o masina existenta din hashtable");
@@ -95,53 +96,57 @@ public class CarRentalSystem {
     System.out.println("quit         - Inchide aplicatia");
     System.out.println("totalRented  - Numarul total de masini inchiriate");
     System.out.println("getCarsNo    - Numarul de masini inchiriate de proprietarul temporar");
-    System.out.println("getCarsList  - Lista masinilor inchiriate de proprietarul temporar");
+    System.out.println("getCarsList  - Lista masinilor inchiriate de proprietarul temporar\n");
   }
  
-  public void run() {
-    boolean quit = false;
-    while(!quit) {
-      System.out.println("Asteapta comanda: (help - Afiseaza lista de comenzi)");
-      String command = sc.nextLine();
-      switch(command) {
-        case "help":
-          printCommandsList();
-          break;
-        case "add":
-          rentCar(getPlateNo(), getOwnerName());
-          break;
-        case "check":
-          System.out.println(isCarRent(getPlateNo()));
-          break;
-        case "remove":
-          returnCar(getPlateNo());
-          break;
-        case "getOwner":
-          System.out.println(getCarRent(getPlateNo()));
-          break;
-        case "totalRented":  
-          System.out.println(getTotalNumberOfCars());
-          break;
-        case "getCarsNo":
-          getCarsNo(getOwnerName());
-          break;
-        case "getCarsList":
-          getCarsList(getOwnerName());
-          break;  
-        case "quit":
-          System.out.println("Aplicatia se inchide...");
-          quit = true;
-          break;
-        default:
-          System.out.println("Unknown command. Choose from:");
-          printCommandsList();
-      }
-    }
+  public void run() throws IOException{
+	  
+	  try(Scanner sc = new Scanner(new FileReader("input.txt"))){
+		  while(sc.hasNextLine()) {
+		    boolean quit = false;
+		    while(!quit) {
+		      System.out.println("\nAsteapta comanda: (help - Afiseaza lista de comenzi)");
+		      String command = sc.nextLine();
+		      switch(command) {
+		        case "help":
+		          printCommandsList();
+		          break;
+		        case "add":
+		          rentCar(getPlateNo(sc), getOwnerName(sc));
+		          break;
+		        case "check":
+		          System.out.println(isCarRent(getPlateNo(sc)));
+		          break;
+		        case "remove":
+		          returnCar(getPlateNo(sc));
+		          break;
+		        case "getOwner":
+		          System.out.println(getCarRent(getPlateNo(sc)));
+		          break;
+		        case "totalRented":  
+		          System.out.println(getTotalNumberOfCars());
+		          break;
+		        case "getCarsNo":
+		          getCarsNo(getOwnerName(sc));
+		          break;
+		        case "getCarsList":
+		          getCarsList(getOwnerName(sc));
+		          break;  
+		        case "quit":
+		          System.out.println("Aplicatia se inchide...");
+		          quit = true;
+		          break;
+		        default:
+		          System.out.println("Unknown command. Choose from:");
+		          printCommandsList();
+		      }
+		    }
+		  }
+	  }
   }
  
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException{
  
-    // create and run an instance (for test purpose)
     new CarRentalSystem().run();
  
   }
